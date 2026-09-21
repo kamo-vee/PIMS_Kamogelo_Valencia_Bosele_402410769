@@ -22,6 +22,7 @@ CREATE TABLE medicines (
     category VARCHAR(50),
     price DECIMAL(10,2) NOT NULL,
     quantity INT NOT NULL,
+    expiry_date DATE,
     supplier_id INT,
     FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE SET NULL
 );
@@ -44,19 +45,16 @@ CREATE TABLE sale_items (
     FOREIGN KEY (medicine_id) REFERENCES medicines(id)
 );
 
--- Default users
 INSERT INTO users (username, password, role) VALUES
-('admin', 'admin123', 'ADMIN'),
+('admin',   'admin123',   'ADMIN'),
 ('cashier', 'cashier123', 'CASHIER');
 
--- Default suppliers
 INSERT INTO suppliers (name, contact, address) VALUES
-('MediSupply Co.', '09171234567', 'Manila'),
+('MediSupply Co.',          '09171234567', 'Manila'),
 ('HealthPlus Distributors', '09189876543', 'Cebu');
 
--- Default medicines
-INSERT INTO medicines (name, category, price, quantity, supplier_id) VALUES
-('Paracetamol 500mg', 'Painkiller', 5.50, 200, 1),
-('Amoxicillin 250mg', 'Antibiotic', 12.00, 150, 1),
-('Biogesic', 'Painkiller', 6.00, 300, 2),
-('Neozep Forte', 'Cold', 7.25, 100, 2);
+INSERT INTO medicines (name, category, price, quantity, expiry_date, supplier_id) VALUES
+('Paracetamol 500mg', 'Painkiller', 5.50,  200, '2027-06-30', 1),
+('Amoxicillin 250mg', 'Antibiotic', 12.00, 150, '2026-12-15', 1),
+('Biogesic',          'Painkiller', 6.00,  15,  '2026-10-05', 2),
+('Neozep Forte',      'Cold',       7.25,  8,   '2026-11-20', 2);
