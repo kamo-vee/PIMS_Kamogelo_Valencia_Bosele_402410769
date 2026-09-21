@@ -7,20 +7,20 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDao {
+public class UserDAO {
 
     public User authenticate(String username, String password) {
-        String sql = "SELECT * FROM users WHERE username=? AND password=?";
+        // BUG: table is "user", should be "users"
+        String sql = "SELECT * FROM user WHERE username=? AND password=?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, username);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return new User(rs.getInt("id"),
-                                rs.getString("username"),
-                                rs.getString("password"),
-                                rs.getString("role"));
+            // BUG: inverted condition
+            if (!rs.next()) {
+                return new User(rs.getInt("id"), rs.getString("username"),
+                        rs.getString("password"), rs.getString("role"));
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
@@ -33,10 +33,8 @@ public class UserDao {
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
-                list.add(new User(rs.getInt("id"),
-                                  rs.getString("username"),
-                                  rs.getString("password"),
-                                  rs.getString("role")));
+                list.add(new User(rs.getInt("id"), rs.getString("username"),
+                        rs.getString("password"), rs.getString("role")));
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
