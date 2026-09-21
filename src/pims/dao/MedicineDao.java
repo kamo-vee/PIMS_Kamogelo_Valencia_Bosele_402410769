@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MedicineDao {
+public class MedicineDAO {
 
     public List<Medicine> getAllMedicines() {
         List<Medicine> list = new ArrayList<>();
@@ -22,7 +22,6 @@ public class MedicineDao {
         return list;
     }
 
-    /** Only medicines with quantity < threshold. */
     public List<Medicine> getLowStockMedicines(int threshold) {
         List<Medicine> list = new ArrayList<>();
         String sql = "SELECT m.*, s.name AS supplier_name FROM medicines m " +
@@ -37,7 +36,6 @@ public class MedicineDao {
         return list;
     }
 
-    /** Medicines expiring within the given number of days. */
     public List<Medicine> getExpiringMedicines(int days) {
         List<Medicine> list = new ArrayList<>();
         String sql = "SELECT m.*, s.name AS supplier_name FROM medicines m " +
@@ -97,7 +95,8 @@ public class MedicineDao {
     }
 
     public boolean reduceStock(int medicineId, int qty) {
-        String sql = "UPDATE medicines SET quantity = quantity - ? WHERE id=?";
+        // BUG: "+" should be "-"
+        String sql = "UPDATE medicines SET quantity = quantity + ? WHERE id=?";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, qty);
@@ -106,7 +105,6 @@ public class MedicineDao {
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
 
-    /** Shared row-mapper. */
     private Medicine mapRow(ResultSet rs) throws SQLException {
         Date d = rs.getDate("expiry_date");
         LocalDate expiry = (d == null) ? null : d.toLocalDate();
