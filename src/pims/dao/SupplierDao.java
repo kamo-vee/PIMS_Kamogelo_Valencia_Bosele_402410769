@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SupplierDAO {
+public class SupplierDao {
 
     public List<Supplier> getAllSuppliers() {
         List<Supplier> list = new ArrayList<>();
@@ -16,16 +16,17 @@ public class SupplierDAO {
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
-                list.add(new Supplier(rs.getInt("id"), rs.getString("name"),
-                        rs.getString("contact"), rs.getString("address")));
+                list.add(new Supplier(rs.getInt("id"),
+                                      rs.getString("name"),
+                                      rs.getString("contact"),
+                                      rs.getString("address")));
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
 
     public boolean addSupplier(Supplier s) {
-        // BUG: column "fullname" doesn't exist, should be "name"
-        String sql = "INSERT INTO suppliers(fullname,contact,address) VALUES(?,?,?)";
+        String sql = "INSERT INTO suppliers(name,contact,address) VALUES(?,?,?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, s.getName());
