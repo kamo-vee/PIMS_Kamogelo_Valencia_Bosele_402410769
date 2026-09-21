@@ -8,15 +8,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaleDAO {
+public class SaleDao {
 
+    /** Inserts a sale + items in one transaction. Returns new sale id, or -1 on failure. */
     public int createSale(Sale sale, List<SaleItem> items) {
         String saleSql = "INSERT INTO sales(sale_date,total,cashier_id) VALUES(NOW(),?,?)";
         String itemSql = "INSERT INTO sale_items(sale_id,medicine_id,quantity,price) " +
                          "VALUES(?,?,?,?)";
         try (Connection con = DBConnection.getConnection()) {
-            // BUG: autoCommit should be false
-            con.setAutoCommit(true);
+            con.setAutoCommit(false);
 
             PreparedStatement ps = con.prepareStatement(saleSql, Statement.RETURN_GENERATED_KEYS);
             ps.setDouble(1, sale.getTotal());
@@ -28,13 +28,14 @@ public class SaleDAO {
             if (rs.next()) saleId = rs.getInt(1);
 
             PreparedStatement ps2 = con.prepareStatement(itemSql);
-            MedicineDAO medDao = new MedicineDAO();
+            MedicineDao medDao = new MedicineDao();
             for (SaleItem it : items) {
                 ps2.setInt(1, saleId);
                 ps2.setInt(2, it.getMedicineId());
                 ps2.setInt(3, it.getQuantity());
                 ps2.setDouble(4, it.getPrice());
                 ps2.addBatch();
+
                 medDao.reduceStock(it.getMedicineId(), it.getQuantity());
             }
             ps2.executeBatch();
