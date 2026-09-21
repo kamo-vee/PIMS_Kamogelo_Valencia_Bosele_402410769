@@ -1,0 +1,54 @@
+# ============================================
+# Compiled output
+# ============================================
+build/
+dist/
+out/
+bin/
+*.class
+
+# ============================================
+# NetBeans
+# ============================================
+nbproject/private/
+nbproject/build-impl.xml~
+/build/
+/dist/
+
+# ============================================
+# VS Code
+# ============================================
+.vscode/
+!.vscode/settings.json
+!.vscode/launch.json
+
+# ============================================
+# IntelliJ / Eclipse
+# ============================================
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# ============================================
+# OS junk
+# ============================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================
+# Logs and crash dumps
+# ============================================
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# ============================================
+# MySQL Connector JAR
+# ============================================
+# Uncomment the line below IF you want GitHub
+# to NOT include the MySQL driver.
+# Some lecturers require it, some don't.
+# lib/mysql-connector-j-*.jar
